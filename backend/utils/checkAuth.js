@@ -1,9 +1,10 @@
 import jwt from "jsonwebtoken";
+import handleError from "./errors";
 
 const checkAuth = (req, res, next) => {
   const token = req.cookies.access_token;
-  if (!token) {
-    return res.send("no token available");
+  if (!token) { 
+    return next(handleError({ status: 401, message: "unauthorized" }));
   }
 
   return jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
@@ -11,7 +12,7 @@ const checkAuth = (req, res, next) => {
       return res.send("Invalid Token");
     } else {
       req.user = decoded;
-      return next();
+      return next(handleError({ status: 401, message: "Invalid Token" }));;
     }
   });
 };
