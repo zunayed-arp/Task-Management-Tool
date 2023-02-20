@@ -32,8 +32,7 @@ export const login = async (req,res) => {
   };
 
   try {
-    const user = await User.findOne({email: req.body.email}).select({
-      'username email password'});
+    const user = await User.findOne({email: req.body.email}).select('username email password',);
       if(!user){
         return res.status(404).send("No user found");
       }
@@ -45,7 +44,7 @@ export const login = async (req,res) => {
         id:user._id,
         name:user.username
       }
-      const token = jwt.sign(payload,process.env.JWT_TOKEN,{expiresIn: '1d'});
+      const token = jwt.sign(payload,process.env.JWT_SECRET,{expiresIn: '1d'});
       return res.cookie('access_token',token,{
         httpOnly:true
       }).status(200).send({message:'Login successfull'})
