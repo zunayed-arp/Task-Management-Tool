@@ -1,20 +1,23 @@
 import jwt from "jsonwebtoken";
-import handleError from "./errors";
+import createError from "./errors";
 
-const checkAuth = (req, res, next) => {
+
+export default (req, res, next) => {
   const token = req.cookies.access_token;
   if (!token) { 
-    return next(handleError({ status: 401, message: "unauthorized" }));
+    // return res.send("No token available");
+    return next(createError({ status: 401, message: "unauthorized" }));
   }
 
   return jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-      return res.send("Invalid Token");
+      return next(createError({ status: 401, message: "Invalid Token" }));
     } else {
       req.user = decoded;
-      return next(handleError({ status: 401, message: "Invalid Token" }));;
+      return next();
+     
     }
   });
 };
 
-export default checkAuth;
+

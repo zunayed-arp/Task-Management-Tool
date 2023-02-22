@@ -5,7 +5,6 @@ import connectDB from "./mongo";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import allRoutes from "./routes/index";
-import handleError from './utils/errors';
 
 const PORT = process.env.PORT || 8000;
 
@@ -22,9 +21,9 @@ app.use("/api", allRoutes);
 
 //error
 app.use((err,req,res)=>{
-  const status = err.statusCode || 500;
-  const message = err.message || 'Internal Server Error';
-  res.status(status).send({'message':message,'stack':err.stack});
+  const status = err.status || 500;
+  const message = err.message || "Internal server error";
+  return res.status(status).json({"message":message, "stack":err.stack})
 })
 
 // export const log = (msg) => console.log(msg);
