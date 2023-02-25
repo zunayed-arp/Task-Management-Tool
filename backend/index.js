@@ -7,7 +7,6 @@ import cookieParser from "cookie-parser";
 import allRoutes from "./routes/index";
 
 const PORT = process.env.PORT || 8000;
-
 const app = express();
 
 //middlewares
@@ -20,11 +19,12 @@ app.use(cookieParser());
 app.use("/api", allRoutes);
 
 //error
-app.use((err,req,res)=>{
-  const status = err.status || 500;
+//eslint-disable-next-line
+app.use((err, req, res, next) => {
+  const statusCode = err.status || 500;
   const message = err.message || "Internal server error";
-  return res.status(status).json({"message":message, "stack":err.stack})
-})
+  return res.status(statusCode).json({ message: message, stack: err.stack });
+});
 
 // export const log = (msg) => console.log(msg);
 
